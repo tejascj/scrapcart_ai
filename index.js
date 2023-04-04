@@ -320,7 +320,7 @@ app.get('/api/check', async (req, res) => {
     }
 });
 // create a endpoint to say hello to the user
-app.get('/hello', (req, res) => {
+app.get('/', (req, res) => {
     console.log('hello');
     res.send('Hello World!');
 });
