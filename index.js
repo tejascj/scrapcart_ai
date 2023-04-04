@@ -36,7 +36,7 @@ async function login(email, password) {
     return user;
 };
 app.post('/userlogin', async (req, res) => {
-    console.log(req.body);
+
     const { email, password } = req.body;
     const user = await login(email, password);
     if (user) {
