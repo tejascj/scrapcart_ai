@@ -19,13 +19,6 @@ app.use(function(req, res, next) {
 const { MongoClient, ObjectId, ServerApiVersion } = require('mongodb');
 const uri = process.env.URI;
 const options = { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 };
-// const users = db.collection('users');
-// const admin = db.collection('admin');
-// const payments = db.collection('payments');
-// const category = db.collection('category');
-// const drivers = db.collection('drivers');
-// const orders = db.collection('orders');
-
 // create a endpoint for login to check if the user is registered or not
 async function login(email, password) {
     const client = new MongoClient(uri, options);
@@ -209,7 +202,7 @@ app.get('/fetchallorders', async (req, res) => {
         const db = client.db('scrapcart');
         const orders = db.collection('orders');
         const getallorders = await orders.find().toArray();
-        // console.log(getallorders);
+        console.log(getallorders);
         res.send(getallorders);
         client.close();
     } catch (error) {
