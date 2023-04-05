@@ -8,26 +8,36 @@ app.use(cors());
 app.use(bodyParser.json());
 const dotenv = require('dotenv');
 dotenv.config();
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
-  });
-  
+});
+
 
 // import mongodb client and connect to the database server
 const { MongoClient, ObjectId, ServerApiVersion } = require('mongodb');
 const uri = process.env.URI;
 const options = { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 };
-// create a endpoint for login to check if the user is registered or not
-async function login(email, password) {
-    const client = new MongoClient(uri, options);
-    const db = client.db('scrapcart');
-    const users = db.collection('users');
-    const user = await users.findOne({ email, password });
-    client.close();
-    return user;
-};
+// connect to the database server and dont close the connection
+const client = new MongoClient(uri, options);
+client.connect(err => {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log("connected to database");
+
+        // create a endpoint for login to check if the user is registered or not
+        async function login(email, password) {
+            const client = new MongoClient(uri, options);
+            const db = client.db('scrapcart');
+            const users = db.collection('users');
+            const user = await users.findOne({ email, password });
+            client.close();
+            return user;
+        };
+    }
+});
 app.post('/userlogin', async (req, res) => {
 
     const { email, password } = req.body;
