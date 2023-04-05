@@ -40,6 +40,7 @@ app.post('/userlogin', async (req, res) => {
             email: user.email,
             phone: user.phone
         });
+        console.log("user found");
     } else {
         console.log(user);
         res.send({ status: 'error', message: 'user not found' });
