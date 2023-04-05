@@ -33,7 +33,6 @@ client.connect(err => {
             const db = client.db('scrapcart');
             const users = db.collection('users');
             const user = await users.findOne({ email, password });
-            client.close();
             return user;
         };
     }
