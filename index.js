@@ -204,9 +204,9 @@ app.get('/fetchallorders', async (req, res) => {
         const db = client.db('scrapcart');
         const orders = db.collection('orders');
         const getallorders = await orders.find().toArray();
-        console.time("Startedresponse");
+        console.time("response");
         res.send(getallorders);
-        console.timeEnd("Endedresponse");
+        console.timeEnd("response");
         client.close();
     } catch (error) {
         res.send({ status: 'error', message: 'orders not found' });
