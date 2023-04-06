@@ -360,7 +360,7 @@ app.post('/delete-drivers', async (req, res) => {
         const deletedrivers = await drivers.deleteMany(
             { _id: { $in: driverids } }
         );
-        console.log("Deleted drivers:", deletedrivers.result.n);
+        console.log("Deleted drivers:", deletedrivers);
         res.send({ status: 'success', message: 'drivers deleted' });
         console.log("drivers deleted");
         client.close();
