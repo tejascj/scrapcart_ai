@@ -364,7 +364,7 @@ app.post('/delete-drivers', async (req, res) => {
         console.log("drivers deleted");
         client.close();
     } catch (error) {
-        res.send({ status: 'error', message: 'drivers not deleted' });
+        res.send({ status: 'error', message: 'drivers not deleted', error: error });
         console.log("drivers not deleted");
     }
 });
