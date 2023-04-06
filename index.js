@@ -379,6 +379,7 @@ app.post('/assign-orders', async (req, res) => {
         const orders = db.collection('orders');
         const objectIds = orderids.map((id) => new ObjectId(id));
         const driver = await drivers.findOne({ _id: new ObjectId(driverid) });
+        console.log(driver);
         const drivername = driver.drivername;
         const driverphone = driver.driverphone;
         const assignorders = await orders.updateMany({ _id: { $in: objectIds } }, { $set: { driverid: driverid, drivername: drivername, driverphone: driverphone, status: 'assigned' } });
