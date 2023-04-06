@@ -320,6 +320,11 @@ app.get('/', (req, res) => {
     console.log('hello');
     res.send('Hello World!');
 });
+// create a endpoint to say hello to the user
+app.get('/', (req, res) => {
+    console.log('hello');
+    res.send('Hello World!');
+});
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 }
