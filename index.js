@@ -315,10 +315,23 @@ app.get('/api/check', async (req, res) => {
         console.log("connection not established");
     }
 });
-// create a endpoint to say hello to the user
-app.get('/', (req, res) => {
-    console.log('hello');
-    res.send('Hello World!');
+app.post('/add-driver', async (req, res) => {
+    console.log(req.body);
+    const { drivername, driveremail, driverphone, driveraddress, driverpassword } = req.body;
+    try {
+        const client = new MongoClient(uri, options);
+        const db = client.db('scrapcart');
+        const drivers = db.collection('drivers');
+        const adddriver = await drivers.insertOne(
+            { drivername: drivername, driveremail: driveremail, driverphone: driverphone, driveraddress: driveraddress, driverpassword: driverpassword }
+        );
+        res.send({ status: 'success', message: 'driver added' });
+        console.log("driver added");
+        client.close();
+    } catch (error) {
+        res.send({ status: 'error', message: 'driver not added' });
+        console.log("driver not added");
+    }
 });
 // create a endpoint to say hello to the user
 app.get('/', (req, res) => {
