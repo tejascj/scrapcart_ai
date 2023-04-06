@@ -368,6 +368,32 @@ app.post('/delete-drivers', async (req, res) => {
         console.log("drivers not deleted", error);
     }
 });
+// create an endpoint to assign the orders to a driver where the driverid and orderids are passed as an array.i want to update the driverid,drivername,driverphone in the orders collection and also update the status of the orders to assigned. i also want the selected orders to be pushed to the driver's orders array
+app.post('/assign-orders', async (req, res) => {
+    console.log(req.body);
+    const { driverid, orderids } = req.body;
+    try {
+        const client = new MongoClient(uri, options);
+        const db = client.db('scrapcart');
+        const drivers = db.collection('drivers');
+        const orders = db.collection('orders');
+        const objectIds = orderids.map((id) => new ObjectId(id));
+        const driver = await drivers.findOne({ _id: new ObjectId(driverid) });
+        const drivername = driver.drivername;
+        const driverphone = driver.driverphone;
+        const assignorders = await orders.updateMany({ _id: { $in: objectIds } }, { $set: { driverid: driverid, drivername: drivername, driverphone: driverphone, status: 'assigned' } });
+        console.log("Assigned orders:", assignorders.result);
+        const pushorders = await drivers.updateOne({ _id: new ObjectId(driverid) }, { $push: { orders: { $each: objectIds } } });
+        console.log("Pushed orders:", pushorders.result);
+        res.send({ status: 'success', message: 'orders assigned' });
+        console.log("orders assigned");
+        client.close();
+    } catch (error) {
+        res.send({ status: 'error', message: 'orders not assigned', error: error });
+        console.log("orders not assigned", error);
+    }
+});
+    
 // create a endpoint to say hello to the user
 app.get('/', (req, res) => {
     console.log('hello');
