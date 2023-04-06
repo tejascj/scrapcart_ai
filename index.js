@@ -8,12 +8,12 @@ app.use(cors());
 app.use(bodyParser.json());
 const dotenv = require('dotenv');
 dotenv.config();
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
-  });
-  
+});
+
 
 // import mongodb client and connect to the database server
 const { MongoClient, ObjectId, ServerApiVersion } = require('mongodb');
@@ -357,10 +357,9 @@ app.post('/delete-drivers', async (req, res) => {
         const client = new MongoClient(uri, options);
         const db = client.db('scrapcart');
         const drivers = db.collection('drivers');
-        const deletedrivers = await drivers.deleteMany(
-            { _id: { $in: driverids } }
-        );
-        console.log("Deleted drivers:", deletedrivers);
+        const objectIds = driverids.map((id) => new ObjectId(id));
+        const deletedrivers = await drivers.deleteMany({ _id: { $in: objectIds } });
+        console.log("Deleted drivers:", deletedrivers.result);
         res.send({ status: 'success', message: 'drivers deleted' });
         console.log("drivers deleted");
         client.close();
