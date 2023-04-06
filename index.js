@@ -349,6 +349,25 @@ app.get('/get-drivers', async (req, res) => {
         console.log("drivers not fetched");
     }
 });
+// create an endpoint to delete the drivers where the driverids are passed as an array
+app.post('/delete-drivers', async (req, res) => {
+    console.log(req.body);
+    const { driverids } = req.body;
+    try {
+        const client = new MongoClient(uri, options);
+        const db = client.db('scrapcart');
+        const drivers = db.collection('drivers');
+        const deletedrivers = await drivers.deleteMany(
+            { _id: { $in: driverids } }
+        );
+        res.send({ status: 'success', message: 'drivers deleted' });
+        console.log("drivers deleted");
+        client.close();
+    } catch (error) {
+        res.send({ status: 'error', message: 'drivers not deleted' });
+        console.log("drivers not deleted");
+    }
+});
 // create a endpoint to say hello to the user
 app.get('/', (req, res) => {
     console.log('hello');
