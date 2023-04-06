@@ -365,7 +365,7 @@ app.post('/delete-drivers', async (req, res) => {
         client.close();
     } catch (error) {
         res.send({ status: 'error', message: 'drivers not deleted', error: error });
-        console.log("drivers not deleted");
+        console.log("drivers not deleted", error);
     }
 });
 // create a endpoint to say hello to the user
