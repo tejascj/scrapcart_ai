@@ -457,7 +457,7 @@ app.post('/driverlogin', async (req, res) => {
     }
 });
 // create an endpoint to update the order with the weight,amount,status,paymentstatus
-app.post('/complete-order', async (req, res) => {
+app.post('/update-paymentstatus', async (req, res) => {
     console.log(req.body);
     const { orderid, weight, amount } = req.body;
     try {
@@ -476,9 +476,9 @@ app.post('/complete-order', async (req, res) => {
     }
 });
 // create an endpoint to update the paymentstatus of the order
-app.post('/update-paymentstatus', async (req, res) => {
+app.post('/complete-order', async (req, res) => {
     console.log(req.body);
-    const { orderid, paymentstatus } = req.body;
+    const { orderid } = req.body;
     try {
         const client = new MongoClient(uri, options);
         const db = client.db('scrapcart');
