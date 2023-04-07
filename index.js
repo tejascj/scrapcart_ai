@@ -397,12 +397,12 @@ app.post('/assign-orders', async (req, res) => {
 // create an endpoint to update the orders status to cancelled where the orderids are passed as an array
 app.post('/cancel-orders', async (req, res) => {
     console.log(req.body);
-    const { selectedOrders } = req.body;
+    const { orderids } = req.body;
     try {
         const client = new MongoClient(uri, options);
         const db = client.db('scrapcart');
         const orders = db.collection('orders');
-        const objectIds = selectedOrders.map((id) => new ObjectId(id));
+        const objectIds = orderids.map((id) => new ObjectId(id));
         console.flush("objectIds: ",objectIds);
         const cancelorders = await orders.updateMany({ _id: { $in: objectIds } }, { $set: { status: 'cancelled' } });
         console.flush(cancelorders);
