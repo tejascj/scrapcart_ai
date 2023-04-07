@@ -165,12 +165,12 @@ app.post('/add-category', async (req, res) => {
 // create an endpoint to place an order
 app.post('/place-order', async (req, res) => {
     console.log(req.body);
-    const { email, address, wasteTypes, date, time, status, driverid, drivername, driverphone, ordertime, phone, weight, amount, paymentstatus,addressurl } = req.body;
+    const { email, address, addressurl, wasteTypes, date, time, status, driverid, drivername, driverphone, ordertime, phone, weight, amount, paymentstatus } = req.body;
     try {
         const client = new MongoClient(uri, options);
         const db = client.db('scrapcart');
         const orders = db.collection('orders');
-        const addorder = await orders.insertOne({ email, address,addressurl, wasteTypes, date, time, status, driverid, drivername, driverphone, ordertime, phone, amount, weight, paymentstatus });
+        const addorder = await orders.insertOne({ email, address, addressurl, wasteTypes, date, time, status, driverid, drivername, driverphone, ordertime, phone, amount, weight, paymentstatus });
         res.send({ status: 'success', message: 'order placed' });
         console.log("order placed");
         client.close();
