@@ -178,7 +178,7 @@ app.post('/edit-category', async (req, res) => {
         client.close();
     } catch (error) {
         res.send({ status: 'error', message: 'category not updated' });
-        console.log("category not updated");
+        console.log("category not updated", error);
     }
 });
 // create an endpoint to delete a category
@@ -195,7 +195,7 @@ app.post('/delete-category', async (req, res) => {
         client.close();
     } catch (error) {
         res.send({ status: 'error', message: 'category not deleted' });
-        console.log("category not deleted");
+        console.log("category not deleted",error);
     }
 });
 
