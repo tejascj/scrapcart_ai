@@ -485,7 +485,6 @@ app.post('/complete-order', async (req, res) => {
         const orders = db.collection('orders');
         const updatepaymentstatus = await orders.updateOne({ _id: new ObjectId(orderid) }, { $set: { status:"Completed" ,paymentstatus: "Paid" } });
         console.log("Updated paymentstatus:", updatepaymentstatus.result);
-        res.send({ status: 'success', message: 'paymentstatus updated' });
         console.log("paymentstatus updated");
         const accountSid = "AC2f9539e1bab2ff011bcfd11b999db3ff";
         const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -494,11 +493,13 @@ app.post('/complete-order', async (req, res) => {
             .create({ body: "Hello from Twilio", from: "+19784876081", to: "+919164056851" })
             .then(message => console.log(message.sid))
             .done();
+        res.json({ status: 'success', message: 'paymentstatus updated' });
     } catch (error) {
-        res.send({ status: 'error', message: 'paymentstatus not updated', error: error });
+        res.status(500).json({ status: 'error', message: 'paymentstatus not updated', error: error });
         console.log("paymentstatus not updated", error);
     }
 });
+
 
 // create a endpoint to say hello to the user
 app.get('/', (req, res) => {
