@@ -13,7 +13,7 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-
+const twilio = require('twilio');
 
 // import mongodb client and connect to the database server
 const { MongoClient, ObjectId, ServerApiVersion } = require('mongodb');
@@ -454,6 +454,53 @@ app.post('/driverlogin', async (req, res) => {
     } catch (error) {
         res.send({ status: 'error', message: 'driver not logged in', error: error });
         console.log("driver not logged in", error);
+    }
+});
+// create an endpoint to update the order with the weight,amount,status,paymentstatus
+app.post('/complete-order', async (req, res) => {
+    console.log(req.body);
+    const { orderid, weight, amount } = req.body;
+    try {
+        const client = new MongoClient(uri, options);
+        const db = client.db('scrapcart');
+        const orders = db.collection('orders');
+        const updateorder = await orders.updateOne({ _id: new ObjectId(orderid) }, { $set: { weight: weight, amount: amount, status: "Items Collected", paymentstatus: "Initiated" } });
+        console.log("Updated order:", updateorder.result);
+        res.send({ status: 'success', message: 'order updated' });
+        console.log("order updated");
+        client.close();
+        const smsclient = require("twilio")(accountSid, authToken);
+        smsclient.messages
+            .create({ body: "Hello from Twilio", from: "+19784876081", to: "+919164056851" })
+            .then(message => console.log(message.sid));
+        smsclient.close();
+    } catch (error) {
+        res.send({ status: 'error', message: 'order not updated', error: error });
+        console.log("order not updated", error);
+    }
+});
+// create an endpoint to update the paymentstatus of the order
+app.post('/update-paymentstatus', async (req, res) => {
+    console.log(req.body);
+    const { orderid, paymentstatus } = req.body;
+    try {
+        const client = new MongoClient(uri, options);
+        const db = client.db('scrapcart');
+        const orders = db.collection('orders');
+        const updatepaymentstatus = await orders.updateOne({ _id: new ObjectId(orderid) }, { $set: { paymentstatus: "Paid" } });
+        console.log("Updated paymentstatus:", updatepaymentstatus.result);
+        res.send({ status: 'success', message: 'paymentstatus updated' });
+        console.log("paymentstatus updated");
+        const accountSid = "AC2f9539e1bab2ff011bcfd11b999db3ff";
+        const authToken = process.env.TWILIO_AUTH_TOKEN;
+        const smsclient = require("twilio")(accountSid, authToken);
+        smsclient.messages
+            .create({ body: "Hello from Twilio", from: "+19784876081", to: "+919164056851" })
+            .then(message => console.log(message.sid));
+        smsclient.close();
+    } catch (error) {
+        res.send({ status: 'error', message: 'paymentstatus not updated', error: error });
+        console.log("paymentstatus not updated", error);
     }
 });
 
