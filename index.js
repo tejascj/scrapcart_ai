@@ -457,6 +457,8 @@ app.post('/driverlogin', async (req, res) => {
     }
 });
 // create an endpoint to update the order with the weight,amount,status,paymentstatus
+const accountSid = "AC2f9539e1bab2ff011bcfd11b999db3ff";
+const authToken = process.env.TWILIO_AUTH_TOKEN;
 app.post('/complete-order', async (req, res) => {
     console.log(req.body);
     const { orderid, weight, amount } = req.body;
