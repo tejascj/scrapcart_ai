@@ -404,7 +404,7 @@ app.post('/cancel-orders', async (req, res) => {
         const orders = db.collection('orders');
         const objectIds = orderids.map((id) => new ObjectId(id));
         const cancelorders = await orders.updateMany({ _id: { $in: objectIds } }, { $set: { status: 'cancelled' } });
-        console.log("Cancelled orders:", cancelorders.result);
+        console.log("Cancelled orders:", cancelorders);
         res.send({ status: 'success', message: 'orders cancelled' });
         console.log("orders cancelled");
         client.close();
