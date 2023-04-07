@@ -394,7 +394,26 @@ app.post('/assign-orders', async (req, res) => {
         console.log("orders not assigned", error);
     }
 });
-    
+// create an endpoint to update the orders status to cancelled where the orderids are passed as an array
+app.post('/cancel-orders', async (req, res) => {
+    console.log(req.body);
+    const { orderids } = req.body;
+    try {
+        const client = new MongoClient(uri, options);
+        const db = client.db('scrapcart');
+        const orders = db.collection('orders');
+        const objectIds = orderids.map((id) => new ObjectId(id));
+        const cancelorders = await orders.updateMany({ _id: { $in: objectIds } }, { $set: { status: 'cancelled' } });
+        console.log("Cancelled orders:", cancelorders.result);
+        res.send({ status: 'success', message: 'orders cancelled' });
+        console.log("orders cancelled");
+        client.close();
+    } catch (error) {
+        res.send({ status: 'error', message: 'orders not cancelled', error: error });
+        console.log("orders not cancelled", error);
+    }
+});
+
 // create a endpoint to say hello to the user
 app.get('/', (req, res) => {
     console.log('hello');
