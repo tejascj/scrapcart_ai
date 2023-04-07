@@ -161,6 +161,43 @@ app.post('/add-category', async (req, res) => {
         console.log("category not added");
     }
 });
+// create an endpoint to update a category
+app.post('/edit-category', async (req, res) => {
+    console.log(req.body);
+    const { name, description, amount, id } = req.body;
+    try {
+        const client = new MongoClient(uri, options);
+        const db = client.db('scrapcart');
+        const category = db.collection('category');
+        const editcategory = await category.findOneAndUpdate(
+            { _id: ObjectId(id) },
+            { $set: { name: name, description: description, amount: amount } }
+        );
+        res.send({ status: 'success', message: 'category updated' });
+        console.log("category updated");
+        client.close();
+    } catch (error) {
+        res.send({ status: 'error', message: 'category not updated' });
+        console.log("category not updated");
+    }
+});
+// create an endpoint to delete a category
+app.post('/delete-category', async (req, res) => {
+    console.log(req.body);
+    const { id } = req.body;
+    try {
+        const client = new MongoClient(uri, options);
+        const db = client.db('scrapcart');
+        const category = db.collection('category');
+        const deletecategory = await category.deleteOne({ _id: ObjectId(id) });
+        res.send({ status: 'success', message: 'category deleted' });
+        console.log("category deleted");
+        client.close();
+    } catch (error) {
+        res.send({ status: 'error', message: 'category not deleted' });
+        console.log("category not deleted");
+    }
+});
 
 // create an endpoint to place an order
 app.post('/place-order', async (req, res) => {
