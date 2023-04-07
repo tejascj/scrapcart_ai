@@ -492,7 +492,7 @@ app.post('/complete-order', async (req, res) => {
         smsclient.messages
             .create({ body: "Hello from Twilio", from: "+19784876081", to: "+919164056851" })
             .then(message => console.log(message.sid))
-            .done();
+            .catch(error => console.log(error));
         res.json({ status: 'success', message: 'paymentstatus updated' });
     } catch (error) {
         res.status(500).json({ status: 'error', message: 'paymentstatus not updated', error: error });
