@@ -394,23 +394,27 @@ app.post('/assign-orders', async (req, res) => {
         console.log("orders not assigned", error);
     }
 });
-// create an endpoint to update the orders status to cancelled where the orderids are passed as an array
-app.post('/cancel-orders', async (req, res) => {
+// create an endpoint to validate the driver login
+app.post('/driverlogin', async (req, res) => {
     console.log(req.body);
-    const { orderids } = req.body;
+    const { driveremail, driverpassword } = req.body;
     try {
         const client = new MongoClient(uri, options);
         const db = client.db('scrapcart');
-        const orders = db.collection('orders');
-        const objectIds = orderids.map((id) => new ObjectId(id));
-        const cancelorders = await orders.updateMany({ _id: { $in: objectIds } }, { $set: { status: 'cancelled' } });
-        console.log("Cancelled orders:", cancelorders.result);
-        res.send({ status: 'success', message: 'orders cancelled' });
-        console.log("orders cancelled");
+        const drivers = db.collection('drivers');
+        const driver = await drivers.findOne({ driveremail: driveremail, driverpassword: driverpassword });
+        console.log(driver);
+        if (driver) {
+            res.send({ data: driver, status: 'success', message: 'driver logged in' });
+            console.log("driver logged in");
+        } else {
+            res.send({ status: 'error', message: 'driver not logged in' });
+            console.log("driver not logged in");
+        }
         client.close();
     } catch (error) {
-        res.send({ status: 'error', message: 'orders not cancelled', error: error });
-        console.log("orders not cancelled", error);
+        res.send({ status: 'error', message: 'driver not logged in', error: error });
+        console.log("driver not logged in", error);
     }
 });
 
