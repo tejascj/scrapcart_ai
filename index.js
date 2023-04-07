@@ -147,12 +147,12 @@ app.get('/get-categories', async (req, res) => {
 // create an endpoint to add a new category
 app.post('/add-category', async (req, res) => {
     console.log(req.body);
-    const { name } = req.body;
+    const { name, description, amount } = req.body;
     try {
         const client = new MongoClient(uri, options);
         const db = client.db('scrapcart');
         const category = db.collection('category');
-        const addcategory = await category.insertOne({ name });
+        const addcategory = await category.insertOne({ name, description, amount });
         res.send({ status: 'success', message: 'category added' });
         console.log("category added");
         client.close();
