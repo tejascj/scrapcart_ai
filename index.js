@@ -169,8 +169,9 @@ app.post('/edit-category', async (req, res) => {
         const client = new MongoClient(uri, options);
         const db = client.db('scrapcart');
         const category = db.collection('category');
+        const itemid = new ObjectId(id);
         const editcategory = await category.findOneAndUpdate(
-            { _id: new ObjectId(id) },
+            { _id: itemid },
             { $set: { name: name, description: description, amount: amount } }
         );
         res.send({ status: 'success', message: 'category updated' });
@@ -189,14 +190,14 @@ app.post('/delete-category', async (req, res) => {
         const client = new MongoClient(uri, options);
         const db = client.db('scrapcart');
         const category = db.collection('category');
-
-        const deletecategory = await category.deleteOne({ _id: new ObjectId(id) });
+        const itemid = new ObjectId(id);
+        const deletecategory = await category.deleteOne({ _id: itemid });
         res.send({ status: 'success', message: 'category deleted' });
         console.log("category deleted");
         client.close();
     } catch (error) {
         res.send({ status: 'error', message: 'category not deleted' });
-        console.log("category not deleted",error);
+        console.log("category not deleted", error);
     }
 });
 
