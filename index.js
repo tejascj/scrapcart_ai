@@ -95,14 +95,14 @@ app.post('/adminlogin', async (req, res) => {
 // create a endpoint to add address to a user account to a certain email
 app.post('/users/addaddress', async (req, res) => {
     console.log(req.body);
-    const { email, address, tag, link } = req.body;
+    const { email, address, tag, url } = req.body;
     try {
         const client = new MongoClient(uri, options);
         const db = client.db('scrapcart');
         const users = db.collection('users');
         const addaddress = await users.findOneAndUpdate(
             { email: email },
-            { $push: { address: { address: address, tag: tag, link: link } } }
+            { $push: { address: { address: address, tag: tag, url: url } } }
         );
         res.send({ status: 'success', message: 'address added' });
         console.log("address added");
@@ -165,7 +165,7 @@ app.post('/add-category', async (req, res) => {
 // create an endpoint to place an order
 app.post('/place-order', async (req, res) => {
     console.log(req.body);
-    const { email, address, wasteTypes, date, time, status, driverid, drivername, driverphone, ordertime, phone, weight, amount, paymentstatus } = req.body;
+    const { email, address, wasteTypes, date, time, status, driverid, drivername, driverphone, ordertime, phone, weight, amount, paymentstatus, } = req.body;
     try {
         const client = new MongoClient(uri, options);
         const db = client.db('scrapcart');
