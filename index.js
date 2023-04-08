@@ -13,7 +13,6 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-const twilio = require('twilio');
 
 // import mongodb client and connect to the database server
 const { MongoClient, ObjectId, ServerApiVersion } = require('mongodb');
@@ -90,6 +89,45 @@ app.post('/adminlogin', async (req, res) => {
         client.close();
     } catch (error) {
 
+    }
+});
+// create an endpoint to update the user profile
+app.post('/update-user-profile', async (req, res) => {
+    console.log(req.body);
+    const { name, email, phone } = req.body;
+    try {
+        const client = new MongoClient(uri, options);
+        const db = client.db('scrapcart');
+        const users = db.collection('users');
+        const updateuser = await users.findOneAndUpdate(
+            { email: email },
+            { $set: { name: name, phone: phone } }
+        );
+        res.send({ status: 'success', message: 'user updated' });
+        console.log("user updated");
+        client.close();
+    } catch (error) {
+        res.send({ status: 'error', message: 'user not updated' });
+        console.log("user not updated");
+    }
+});
+// create an endpoint to delete a address from a user account to a certain email where address is given
+app.post('/users/deleteaddress', async (req, res) => {
+    console.log(req.body);
+    const { email, address } = req.body;
+    try {
+        const client = new MongoClient(uri, options);
+        const db = client.db('scrapcart');
+        const users = db.collection('users');
+        const deleteaddress = await users.findOneAndUpdate(
+            {email: email},{ $pull: { address: { address: address } } }
+        );
+        res.send({ status: 'success', message: 'address deleted' });
+        console.log("address deleted");
+        client.close();
+    } catch (error) {
+        res.send({ status: 'error', message: 'address not deleted' });
+        console.log("address not deleted");
     }
 });
 // create a endpoint to add address to a user account to a certain email
