@@ -167,6 +167,21 @@ app.get('/get-user-data', async (req, res) => {
         console.log("address not found");
     }
 });
+// create a endpoint to get all the users
+app.get('/get-users', async (req, res) => {
+    try {
+        const client = new MongoClient(uri, options);
+        const db = client.db('scrapcart');
+        const users = db.collection('users');
+        const allusers = await users.find().toArray();
+        // console.log(allusers);
+        res.send(allusers);
+        client.close();
+    } catch (error) {
+        res.send({ status: 'error', message: 'users not found' });
+        console.log("users not found");
+    }
+});
 // create a endpoint to get categories
 app.get('/get-categories', async (req, res) => {
     try {
